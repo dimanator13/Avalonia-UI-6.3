@@ -14,25 +14,41 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
-    <StackPanel>
-        <ListBox ItemsSource="{Binding NoteItems}" SelectedItem="{Binding SelectedNote}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Title}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
     
-        <TextBox Text="{Binding SelectedNote.Title, Mode=TwoWay}" />
-
-        <TextBox Text="{Binding SelectedNote.Text, Mode=TwoWay}" AcceptsReturn="True" />
-
-        <CheckBox IsChecked="{Binding SelectedNote.IsImportant, Mode=TwoWay}" />
-        
-        <Button Content="Add" Command="{Binding AddCommand}"/>
-        
-        <Button Content="Delete" Command="{Binding DeleteCommand}"/>
-    </StackPanel>
-
+    <Border BorderBrush="Gray" BorderThickness="1" Margin="10">
+        <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
+            <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="1" Padding="10">
+                <StackPanel Spacing="10" Orientation="Horizontal">
+                    <TextBlock Text="New note:" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding NewNoteTitle}"/>
+                    <Button Content="Add" Command="{Binding AddCommand}"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Padding="10">
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
+                    <ListBox Grid.Column="0" ItemsSource="{Binding Notes}" SelectedItem="{Binding SelectedNote}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Title}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <StackPanel Grid.Column="1" Spacing="10">
+                        <TextBlock Text="{Binding StatusNote}"/>
+                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *" RowSpacing="10" ColumnSpacing="10" IsVisible="{Binding HasSelectedNote}">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Title:" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedNote.Title, Mode=TwoWay}" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Text:" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedNote.Text, Mode=TwoWay}" AcceptsReturn="True" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Important:" VerticalAlignment="Center"/>
+                            <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding SelectedNote.IsImportant, Mode=TwoWay}" />
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Grid.Row="2" BorderBrush="Gray" BorderThickness="1" Padding="10">
+                <Button Content="Delete" Command="{Binding DeleteCommand}" IsVisible="{Binding HasSelectedNote}"/>
+            </Border>
+        </Grid>
+    </Border>
 </Window>

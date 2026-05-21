@@ -7,9 +7,12 @@ namespace Task_3.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty] private NoteItem? _selectedNote;
+    [ObservableProperty] private string _newNoteTitle = string.Empty;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(HasSelectedNote), nameof(StatusNote))] private NoteItem? _selectedNote;
+    public bool HasSelectedNote => SelectedNote is not null;
+    public string StatusNote => SelectedNote is not null ? "Item:" : "Choose any item";
     
-    public ObservableCollection<NoteItem> NoteItems { get; } = new()
+    public ObservableCollection<NoteItem> Notes { get; } = new()
     {
         new NoteItem("Buy Bread", "You need to buy bread", null),
         new NoteItem("Doctor", "Go to doctor", true),
@@ -19,7 +22,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public void Add()
     {
-        NoteItems.Add(new NoteItem(null, null, null));
+        var note = new NoteItem((string.IsNullOrWhiteSpace(NewNoteTitle) ? "None" : NewNoteTitle), null, null);
+        
+        Notes.Add(note);
+        SelectedNote = note;
+        NewNoteTitle = "";
     }
     
     [RelayCommand]
@@ -27,7 +34,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (SelectedNote != null)
         {
-            NoteItems.Remove(SelectedNote);
+            Notes.Remove(SelectedNote);
         }
     }
 }
